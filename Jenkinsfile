@@ -96,21 +96,14 @@ pipeline {
         }
 stage("Deploy to Tomcat") {
     steps {
-        withCredentials([usernamePassword(credentialsId: 'tomcat-credits', usernameVariable: 'TOMCAT_USER', passwordVariable: 'TOMCAT_PASS')]) {
-            script {
-                // Find the WAR file built by Maven
-                def warFile = sh(script: "ls target/*.war | head -n 1", returnStdout: true).trim()
+        withCredentials([usernamePassword(credentialsId: 'tomcat', usernameVariable: 'TOMCAT_USER', passwordVariable: 'TOMCAT_PASS')]) {
+    sh """
+        curl -u $TOMCAT_USER:$TOMCAT_PASS \
+          --upload-file target/${pom.artifactId}-${pom.version}.war \
+          "http://54.90.254.220:8080/manager/text/deploy?path=/simplecustomerapp&update=true"
+    """
+}
 
-                echo "Deploying ${warFile} to Tomcat at context path /simplecustomerapp ..."
-
-                sh """
-                    curl -u $TOMCAT_USER:$TOMCAT_PASS \
-                         -T ${warFile} \
-                         "http://54.90.254.220:8080/manager/text/deploy?path=/simplecustomerapp&update=true"
-        
-                        """
-                    }
-                }
             }
         }
 
