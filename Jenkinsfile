@@ -96,3 +96,34 @@ pipeline {
         }
     }
 }
+stage("Deploy to Tomcat") {
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'tomcat-credits', usernameVariable: 'TOMCAT_USER', passwordVariable: 'TOMCAT_PASS')]) {
+            script {
+                // Find the WAR file built by Maven
+                def warFile = sh(script: "ls target/*.war | head -n 1", returnStdout: true).trim()
+
+                echo "Deploying ${warFile} to Tomcat at context path /simplecustomerapp ..."
+
+                sh """
+                    curl -u $TOMCAT_USER:$TOMCAT_PASS \
+                         -T ${warFile} \
+                         "http://54.90.254.220:8080/manager/text/deploy?path=/simplecustomerapp&update=true"
+        
+                        """
+                    }
+                }
+            }
+        }
+
+        stage("Slack Notification") {
+            steps {
+                slackSend(
+                    channel: "${SLACK_CHANNEL}",
+                    color: "#36a64f",
+                    message: "Declarative pipeline for *Simple Customer App* has been successfully deployed in Tomcat ✅ by SNL for Job: ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
+                )
+            }
+        }
+    }
+}
