@@ -96,7 +96,7 @@ pipeline {
         }
 stage("Deploy to Tomcat") {
     steps {
-        withCredentials([usernamePassword(credentialsId: 'tomcat', usernameVariable: 'TOMCAT_USER', passwordVariable: 'TOMCAT_PASS')]) {
+        withCredentials([usernamePassword(credentialsId: 'tomcat-credits', usernameVariable: 'TOMCAT_USER', passwordVariable: 'TOMCAT_PASS')]) {
     sh """
         curl -u $TOMCAT_USER:$TOMCAT_PASS \
           --upload-file target/${pom.artifactId}-${pom.version}.war \
