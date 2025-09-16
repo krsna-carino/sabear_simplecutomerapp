@@ -117,7 +117,7 @@ stage("Deploy to Tomcat") {
         stage("Slack Notification") {
             steps {
                 slackSend(
-                    channel: "${SLACK_CHANNEL}",
+                    channel: "${env.SLACK_CHANNEL}",
                     color: "#36a64f",
                     message: "Declarative pipeline for *Simple Customer App* has been successfully deployed in Tomcat ✅ by SNL for Job: ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
                 )
