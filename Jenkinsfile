@@ -114,14 +114,16 @@ stage("Deploy to Tomcat") {
             }
         }
 
-        stage("Slack Notification") {
-            steps {
-                slackSend(
-                    channel: "${env.SLACK_CHANNEL}",
-                    color: "#36a64f",
-                    message: "Declarative pipeline for *Simple Customer App* has been successfully deployed in Tomcat ✅ by SNL for Job: ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
-                )
-            }
-        }
+      stage("Slack Notification") {
+    steps {
+        slackSend(
+            channel: "#jenkins-integration",          // ✅ must not be null
+            color: "#36a64f",
+            tokenCredentialId: 'techiehorizon',       // ✅ this must match the credential ID you created
+            message: "✅ Declarative pipeline for *Simple Customer App* deployed successfully in Tomcat by SNL for Job: ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
+        )
+    }
+}
+
     }
 }
