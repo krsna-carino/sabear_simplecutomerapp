@@ -94,8 +94,6 @@ pipeline {
                 }
             }
         }
-    }
-}
 stage("Deploy to Tomcat") {
     steps {
         withCredentials([usernamePassword(credentialsId: 'tomcat-credits', usernameVariable: 'TOMCAT_USER', passwordVariable: 'TOMCAT_PASS')]) {
